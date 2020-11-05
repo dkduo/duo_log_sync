@@ -5,10 +5,12 @@ Definition of the Consumer class
 import os
 import json
 import logging
+from datetime import datetime, timezone
 from duologsync.config import Config
 from duologsync.program import Program
 from duologsync.producer.producer import Producer
 from duologsync.consumer.cef import log_to_cef
+from duologsync.consumer.syslog import get_syslog_header
 
 
 class Consumer():
@@ -109,6 +111,12 @@ class Consumer():
             formatted_log = log_to_cef(log, self.keys_to_labels)
         elif self.log_format == Config.JSON:
             formatted_log = json.dumps(log)
+            if Config.get_syslog_enabled():
+                # log_timestamp = datetime.fromisoformat(log["isotimestamp"]) #new in 3.7, provides microsecond resolution
+                log_timestamp = datetime.fromtimestamp(log["timestamp"], tz=timezone.utc)
+                syslog_header = get_syslog_header(format=Config.get_syslog_format(), timestamp=log_timestamp)
+                formatted_log = ' '.join([syslog_header, formatted_log])
+
         else:
             raise ValueError(
                 f"{self.log_format} is not a supported log format")

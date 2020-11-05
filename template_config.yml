@@ -58,6 +58,19 @@ version: '1.0.0'
     # Port for Http Proxy
     #proxy_port: 8080
 
+  # Settings related to Syslog support for JSON messages. By default, DLS JSON messages do not contain a header.
+  # If your SIEM requires a Syslog header prepended to the JSON message set enabled to True.
+  # DLS will default to the newer RFC5424 formatting, but also supports the older RFC3164.
+  #syslog:
+
+    # Whether a Syslog header should be prepended to each JSON log
+    # Valid options are False, True
+    #enabled: False
+
+    # Syslog header format
+    # Valid options are 'RFC5424', 'RFC3164'
+    #format: 'RFC5424'
+
 # List of servers and how DLS will communicate with them
 servers:
   

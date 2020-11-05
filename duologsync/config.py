@@ -38,6 +38,8 @@ class Config:
     CHECKPOINTING_DIRECTORY_DEFAULT = DIRECTORY_DEFAULT
     PROXY_SERVER_DEFAULT = ''
     PROXY_PORT_DEFAULT = 0
+    SYSLOG_ENABLED_DEFAULT = False
+    SYSLOG_FORMAT_DEFAULT = 'RFC5424'
 
     # To understand these schema definitions better, compare side-by-side to
     # the template_config.yml file
@@ -107,6 +109,21 @@ class Config:
                         'type': 'number',
                         'default': PROXY_PORT_DEFAULT
 
+                    }
+                }
+            },
+            'syslog': {
+                'type': 'dict',
+                'default': {},
+                'schema': {
+                    'enabled': {
+                        'type': 'boolean',
+                        'default': SYSLOG_ENABLED_DEFAULT
+                    },
+                    'format': {
+                        'type': 'string',
+                        'empty': False,
+                        'default': SYSLOG_FORMAT_DEFAULT
                     }
                 }
             }
@@ -321,6 +338,16 @@ class Config:
     def get_proxy_port(cls):
         """@return the proxy_port in config"""
         return cls.get_value(['dls_settings', 'proxy', 'proxy_port'])
+
+    @classmethod
+    def get_syslog_enabled(cls):
+        """@return whether syslog headers should be added to JSON logs"""
+        return cls.get_value(['dls_settings', 'syslog', 'enabled'])
+
+    @classmethod
+    def get_syslog_format(cls):
+        """@return the format of syslog header should be used"""
+        return cls.get_value(['dls_settings', 'syslog', 'format'])
 
     @classmethod
     def create_config(cls, config_filepath):
